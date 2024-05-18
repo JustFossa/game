@@ -44,3 +44,37 @@ SDL_Texture *loadTexture(std::string path, SDL_Renderer *renderer)
 
     return newTexture;
 }
+
+SDL_Texture *renderText(SDL_Renderer *renderer, const std::string &message, const std::string &fontFile, SDL_Color color, int fontSize, SDL_Rect *textRect)
+{
+    TTF_Font *font = TTF_OpenFont(fontFile.c_str(), fontSize);
+    if (!font)
+    {
+        printf("Failed to load font: %s\n", TTF_GetError());
+        return nullptr;
+    }
+
+    SDL_Surface *surface = TTF_RenderText_Solid(font, message.c_str(), color);
+    if (!surface)
+    {
+        printf("Failed to create surface: %s\n", TTF_GetError());
+        TTF_CloseFont(font);
+        return nullptr;
+    }
+
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (!texture)
+    {
+        printf("Failed to create texture: %s\n", SDL_GetError());
+    }
+    else
+    {
+        textRect->w = surface->w;
+        textRect->h = surface->h;
+    }
+
+    SDL_FreeSurface(surface);
+    TTF_CloseFont(font);
+
+    return texture;
+}

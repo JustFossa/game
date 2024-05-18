@@ -19,7 +19,7 @@ const int PLAYER_HEIGHT = 50;
 
 const float DELAY = 1000 / 60;
 
-Uint32 frameTime;
+Uint32 frameTime = 1000 / 60;
 
 SDL_Rect playerRect = {
     SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2,
@@ -32,6 +32,12 @@ SDL_Rect viewport = {
     0,
     SCREEN_WIDTH,
     SCREEN_HEIGHT};
+
+SDL_Rect statsRect = {
+    10,
+    10,
+    0,
+    0};
 
 SDL_Window *window = NULL;
 SDL_Surface *screenSurface = NULL;
@@ -73,6 +79,11 @@ int main(int argc, char *argv[])
                     printf("SDL_Image could not initialize! Error: %s\n", IMG_GetError());
                     return -1;
                 }
+                if (!TTF_Init() < 0)
+                {
+                    printf("SDL_ttf could not initialize! Error: %s\n", TTF_GetError());
+                    return -1;
+                }
                 else
                 {
                     screenSurface = SDL_GetWindowSurface(window);
@@ -82,7 +93,11 @@ int main(int argc, char *argv[])
                     while (quit == false)
                     {
                         Uint32 frameStart = SDL_GetTicks64();
+                        std::string statsString = "X: " + std::to_string(player->playerRect.x) + " Y: " + std::to_string(player->playerRect.y) + " FPS: " + std::to_string(1000 / frameTime);
                         SDL_RenderClear(renderer);
+                        TTF_Font *font = TTF_OpenFont("assets/fonts/OpenSans.ttf", 24);
+                        SDL_Texture *stats = renderText(renderer, statsString, "assets/fonts/OpenSans.ttf", {255, 255, 255, 255}, 24, &statsRect);
+                        SDL_RenderCopy(renderer, stats, NULL, &statsRect);
                         while (SDL_PollEvent(&e) != 0)
                         {
                             if (e.type == SDL_QUIT)
