@@ -6,6 +6,7 @@
 #include "map.h"
 #include "utils.h"
 #include "player.h"
+#include "item.h"
 
 void init();
 
@@ -39,6 +40,7 @@ SDL_Rect statsRect = {
     0,
     0};
 
+std::vector<Item *> items;
 SDL_Window *window = NULL;
 SDL_Surface *screenSurface = NULL;
 SDL_Surface *currentSurface = NULL;
@@ -89,6 +91,7 @@ int main(int argc, char *argv[])
                     screenSurface = SDL_GetWindowSurface(window);
                     SDL_Event e;
                     bool quit = false;
+
                     init();
                     while (quit == false)
                     {
@@ -106,9 +109,8 @@ int main(int argc, char *argv[])
                             }
                         }
                         player->move(map);
-                        player->jump(map);
-                        player->gravity(map);
                         player->render(renderer);
+                        map->render(renderer);
                         SDL_RenderPresent(renderer);
                         frameTime = SDL_GetTicks64() - frameStart;
                         if (frameTime < DELAY)
@@ -131,7 +133,8 @@ int main(int argc, char *argv[])
 void init()
 {
     SDL_RenderClear(renderer);
-    map = new Map(renderer, "assets/map.png", viewport.x, viewport.y, viewport.w, viewport.h);
+    items.push_back(new Item(renderer, "assets/item.png", 100, 100, 50, 50));
+    map = new Map(renderer, "assets/bg.png", viewport.x, viewport.y, viewport.w, viewport.h, items);
     map->render(renderer);
     player = new Player(renderer, "assets/player.png", playerRect.x, playerRect.y, playerRect.w, playerRect.h, SPEED);
     player->render(renderer);

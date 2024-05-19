@@ -24,7 +24,7 @@ SDL_Surface *loadSurface(std::string path, SDL_Window *window)
     return optimizedSurface;
 }
 
-SDL_Texture *loadTexture(std::string path, SDL_Renderer *renderer)
+SDL_Texture *loadTexture(const std::string path, SDL_Renderer *renderer)
 {
     SDL_Texture *newTexture = NULL;
     SDL_Surface *loadedSurface = IMG_Load(path.c_str());
@@ -41,7 +41,6 @@ SDL_Texture *loadTexture(std::string path, SDL_Renderer *renderer)
         }
         SDL_FreeSurface(loadedSurface);
     }
-
     return newTexture;
 }
 
