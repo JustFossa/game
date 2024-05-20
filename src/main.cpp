@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "player.h"
 #include "item.h"
+#include "animation.h"
 
 void init();
 
@@ -18,9 +19,11 @@ const float SPEED = 5;
 const int PLAYER_WIDTH = 50;
 const int PLAYER_HEIGHT = 50;
 
-const float DELAY = 1000 / 60;
+const int FRAME_RATE = 60;
 
-Uint32 frameTime = 1000 / 60;
+const float DELAY = 1000 / FRAME_RATE;
+
+Uint32 frameTime = 1000 / FRAME_RATE;
 
 SDL_Rect playerRect = {
     SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2,
@@ -40,6 +43,7 @@ SDL_Rect statsRect = {
     0,
     0};
 
+std::vector<Animation *> animations;
 std::vector<Item *> items;
 SDL_Window *window = NULL;
 SDL_Surface *screenSurface = NULL;
@@ -111,6 +115,11 @@ int main(int argc, char *argv[])
                         player->move(map);
                         player->render(renderer);
                         map->render(renderer);
+                        for (auto animation : animations)
+                        {
+                            animation->update();
+                            animation->render(renderer);
+                        }
                         SDL_RenderPresent(renderer);
                         frameTime = SDL_GetTicks64() - frameStart;
                         if (frameTime < DELAY)
@@ -134,7 +143,9 @@ void init()
 {
     SDL_RenderClear(renderer);
     items.push_back(new Item(renderer, "assets/item.png", 100, 100, 50, 50));
-    map = new Map(renderer, "assets/bg.png", viewport.x, viewport.y, viewport.w, viewport.h, items);
+    animations.push_back(new Animation(renderer, "assets/particles/fire.png", 500, SCREEN_HEIGHT - 96, 96, 96, 19, 20, 4));
+    animations.push_back(new Animation(renderer, "assets/particles/poisoncloud.png", 600, SCREEN_HEIGHT - 144, 144, 144, 19, 20, 4));
+    map = new Map(renderer, "assets/bg.jpg", viewport.x, viewport.y, viewport.w, viewport.h, items);
     map->render(renderer);
     player = new Player(renderer, "assets/player.png", playerRect.x, playerRect.y, playerRect.w, playerRect.h, SPEED);
     player->render(renderer);
