@@ -7,6 +7,7 @@
 #include <math.h>
 #include "utils.h"
 #include <vector>
+#include "healthbar.h"
 
 const float JUMP_DELAY = 1000;
 const float JUMP_HEIGHT = 50;
@@ -14,11 +15,12 @@ const float JUMP_SPEED = 20.0f;
 const float GRAVITY = 1.0f;
 static bool jumping = false;
 
-Player::Player(SDL_Renderer *renderer, std::string path, float x, float y, float w, float h, float speed)
+Player::Player(SDL_Renderer *renderer, std::string path, float x, float y, float w, float h, float speed, HealthBar *healthBar)
 {
     this->playerRect = {static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h)};
     this->speed = speed;
     this->texture = loadTexture(path, renderer);
+    this->healthBar = healthBar;
 }
 
 void Player::render(SDL_Renderer *renderer)

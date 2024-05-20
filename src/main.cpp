@@ -3,15 +3,19 @@
 #include <stdio.h>
 #include <string>
 #include <SDL_timer.h>
+#include <SDL_ttf.h>
 #include "map.h"
 #include "utils.h"
 #include "player.h"
 #include "item.h"
 #include "animation.h"
 #include "json.h"
+#include "healthbar.h"
 #include <nlohmann/json.hpp>
 
 void init();
+
+HealthBar *healthBar;
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
@@ -55,14 +59,12 @@ std::vector<Animation *> animations;
 std::vector<Item *> items;
 SDL_Window *window = NULL;
 SDL_Surface *screenSurface = NULL;
-SDL_Surface *currentSurface = NULL;
 SDL_Renderer *renderer = NULL;
 Map *map = NULL;
 Player *player = NULL;
 
 int main(int argc, char *argv[])
 {
-
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         printf("SDL could not initialize! Error: %s\n", SDL_GetError());
@@ -87,13 +89,12 @@ int main(int argc, char *argv[])
             else
             {
                 int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_WEBP;
-
                 if (!(IMG_Init(imgFlags) & imgFlags))
                 {
                     printf("SDL_Image could not initialize! Error: %s\n", IMG_GetError());
                     return -1;
                 }
-                if (!TTF_Init() < 0)
+                if (TTF_Init() == -1)
                 {
                     printf("SDL_ttf could not initialize! Error: %s\n", TTF_GetError());
                     return -1;
@@ -105,7 +106,7 @@ int main(int argc, char *argv[])
                     bool quit = false;
 
                     init();
-                    while (quit == false)
+                    while (!quit)
                     {
                         Uint32 frameStart = SDL_GetTicks64();
                         std::string statsString = "X: " + std::to_string(player->playerRect.x) + " Y: " + std::to_string(player->playerRect.y) + " FPS: " + std::to_string(1000 / frameTime);
@@ -113,6 +114,9 @@ int main(int argc, char *argv[])
                         TTF_Font *font = TTF_OpenFont("assets/fonts/OpenSans.ttf", 24);
                         SDL_Texture *stats = renderText(renderer, statsString, "assets/fonts/OpenSans.ttf", {255, 255, 255, 255}, 24, &statsRect);
                         SDL_RenderCopy(renderer, stats, NULL, &statsRect);
+                        SDL_DestroyTexture(stats);
+                        TTF_CloseFont(font);
+
                         while (SDL_PollEvent(&e) != 0)
                         {
                             if (e.type == SDL_QUIT)
@@ -120,14 +124,20 @@ int main(int argc, char *argv[])
                                 quit = true;
                             }
                         }
+
                         player->move(map);
                         player->render(renderer);
                         map->render(renderer);
+
                         for (auto animation : animations)
                         {
                             animation->update();
                             animation->render(renderer);
                         }
+
+                        healthBar->render(renderer);
+                        healthBar->setHealth(player->healthBar->getHealth() - 0.01f);
+
                         SDL_RenderPresent(renderer);
                         frameTime = SDL_GetTicks64() - frameStart;
                         if (frameTime < DELAY)
@@ -151,13 +161,14 @@ void init()
 {
     SDL_RenderClear(renderer);
     items.push_back(new Item(renderer, "assets/item.png", 100, 100, 50, 50));
-    json particles = loadJson("assets/particles.json");
-    for (auto particle : particles)
+    nlohmann::json particles = loadJson("assets/particles.json");
+    for (auto &particle : particles)
     {
         animations.push_back(new Animation(renderer, particle["texture"], particle["x"], particle["y"], particle["frameWidth"], particle["frameHeight"], particle["frameCount"], particle["frameRate"], particle["perRow"]));
     }
     map = new Map(renderer, "assets/bg.jpg", viewport.x, viewport.y, viewport.w, viewport.h, items);
     map->render(renderer);
-    player = new Player(renderer, "assets/player.png", playerRect.x, playerRect.y, playerRect.w, playerRect.h, SPEED);
+    healthBar = new HealthBar(renderer, "assets/healthbar.png", 100, 100, SCREEN_WIDTH - 240, -25, 46, 20, 5);
+    player = new Player(renderer, "assets/player.png", playerRect.x, playerRect.y, playerRect.w, playerRect.h, SPEED, healthBar);
     player->render(renderer);
 }

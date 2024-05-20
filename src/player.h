@@ -7,14 +7,16 @@
 #include "map.h"
 #include "item.h"
 #include <vector>
+#include "healthbar.h"
 
 class Player
 {
 public:
     SDL_Rect playerRect;
     std::vector<Item *> playerItems;
+    HealthBar *healthBar;
 
-    Player(SDL_Renderer *renderer, std::string path, float x, float y, float w, float h, float speed);
+    Player(SDL_Renderer *renderer, std::string path, float x, float y, float w, float h, float speed, HealthBar *healthBar);
 
     void render(SDL_Renderer *renderer);
     void move(Map *map);
