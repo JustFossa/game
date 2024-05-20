@@ -1,0 +1,32 @@
+[
+	{
+		"texture": "assets/particles/fire.png",
+		"x": 500,
+		"y": 400,
+		"frameWidth": 96,
+		"frameHeight": 96,
+		"frameCount": 19,
+		"frameRate": 20,
+		"perRow": 4
+	},
+	{
+		"texture": "assets/particles/poisoncloud.png",
+		"x": 700,
+		"y": 400,
+		"frameWidth": 144,
+		"frameHeight": 144,
+		"frameCount": 19,
+		"frameRate": 20,
+		"perRow": 4
+	},
+	{
+		"texture": "assets/particles/smoke.png",
+		"x": 900,
+		"y": 400,
+		"frameWidth": 80,
+		"frameHeight": 80,
+		"frameCount": 19,
+		"frameRate": 20,
+		"perRow": 4
+	}
+]

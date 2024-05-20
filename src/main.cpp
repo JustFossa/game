@@ -8,6 +8,8 @@
 #include "player.h"
 #include "item.h"
 #include "animation.h"
+#include "json.h"
+#include <nlohmann/json.hpp>
 
 void init();
 
@@ -42,6 +44,12 @@ SDL_Rect statsRect = {
     10,
     0,
     0};
+
+struct particle
+{
+    std::string texture;
+    int x, y, frameWidth, frameHeight, frameCount, frameRate, perRow;
+};
 
 std::vector<Animation *> animations;
 std::vector<Item *> items;
@@ -143,8 +151,11 @@ void init()
 {
     SDL_RenderClear(renderer);
     items.push_back(new Item(renderer, "assets/item.png", 100, 100, 50, 50));
-    animations.push_back(new Animation(renderer, "assets/particles/fire.png", 500, SCREEN_HEIGHT - 96, 96, 96, 19, 20, 4));
-    animations.push_back(new Animation(renderer, "assets/particles/poisoncloud.png", 600, SCREEN_HEIGHT - 144, 144, 144, 19, 20, 4));
+    json particles = loadJson("assets/particles.json");
+    for (auto particle : particles)
+    {
+        animations.push_back(new Animation(renderer, particle["texture"], particle["x"], particle["y"], particle["frameWidth"], particle["frameHeight"], particle["frameCount"], particle["frameRate"], particle["perRow"]));
+    }
     map = new Map(renderer, "assets/bg.jpg", viewport.x, viewport.y, viewport.w, viewport.h, items);
     map->render(renderer);
     player = new Player(renderer, "assets/player.png", playerRect.x, playerRect.y, playerRect.w, playerRect.h, SPEED);
