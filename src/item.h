@@ -16,6 +16,7 @@ public:
     Item(SDL_Renderer *renderer, std::string path, float x, float y, float w, float h);
     void render(SDL_Renderer *renderer);
     SDL_Rect getRect();
+    void updateRect(SDL_Rect rect);
 };
 
 #endif // ITEM_H

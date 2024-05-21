@@ -17,7 +17,7 @@ Animation::Animation(SDL_Renderer *renderer, std::string path, int x, int y, int
     this->animationRect = {x, y, frameWidth, frameHeight};
     this->currentFrame = 0;
     this->perRow = perRow;
-    this->lastUpdateTime = SDL_GetTicks(); // Initialize lastUpdateTime
+    this->lastUpdateTime = SDL_GetTicks64(); // Initialize lastUpdateTime
 }
 
 void Animation::render(SDL_Renderer *renderer)

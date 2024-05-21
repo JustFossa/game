@@ -18,7 +18,7 @@ HealthBar::HealthBar(SDL_Renderer *renderer, std::string texture, int health, in
 
 void HealthBar::render(SDL_Renderer *renderer)
 {
-    int currentFrame = ((health * frameCount) / maxHealth);
+    int currentFrame = (((maxHealth - health) * frameCount) / maxHealth);
     if (currentFrame > 0)
     {
         currentFrame--;

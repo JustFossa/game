@@ -8,7 +8,7 @@
 #include "item.h"
 #include <vector>
 #include "healthbar.h"
-
+#include "hud.h"
 class Player
 {
 public:
@@ -16,7 +16,7 @@ public:
     std::vector<Item *> playerItems;
     HealthBar *healthBar;
 
-    Player(SDL_Renderer *renderer, std::string path, float x, float y, float w, float h, float speed, HealthBar *healthBar);
+    Player(SDL_Renderer *renderer, std::string path, float x, float y, float w, float h, float speed, HUD *hud);
 
     void render(SDL_Renderer *renderer);
     void move(Map *map);
@@ -25,6 +25,8 @@ public:
 
 private:
     SDL_Texture *texture;
+
+    HUD *hud;
 
     float speed;
 

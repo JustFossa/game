@@ -12,10 +12,14 @@
 #include "json.h"
 #include "healthbar.h"
 #include <nlohmann/json.hpp>
+#include "hud.h"
+#include "inventory.h"
 
 void init();
 
 HealthBar *healthBar;
+Inventory *inventory;
+HUD *hud;
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
@@ -129,14 +133,15 @@ int main(int argc, char *argv[])
                         player->render(renderer);
                         map->render(renderer);
 
+                        hud->render(renderer);
+                        hud->getInventory()->update();
+                        hud->getInventory()->renderItems(renderer);
+
                         for (auto animation : animations)
                         {
                             animation->update();
                             animation->render(renderer);
                         }
-
-                        healthBar->render(renderer);
-                        healthBar->setHealth(player->healthBar->getHealth() - 0.01f);
 
                         SDL_RenderPresent(renderer);
                         frameTime = SDL_GetTicks64() - frameStart;
@@ -168,7 +173,9 @@ void init()
     }
     map = new Map(renderer, "assets/bg.jpg", viewport.x, viewport.y, viewport.w, viewport.h, items);
     map->render(renderer);
-    healthBar = new HealthBar(renderer, "assets/healthbar.png", 100, 100, SCREEN_WIDTH - 240, -25, 46, 20, 5);
-    player = new Player(renderer, "assets/player.png", playerRect.x, playerRect.y, playerRect.w, playerRect.h, SPEED, healthBar);
+    healthBar = new HealthBar(renderer, "assets/healthbar.png", 100, 100, SCREEN_WIDTH - 240, -25, 48, 16, 6);
+    inventory = new Inventory(renderer, "assets/inventory.png", SCREEN_WIDTH - 3 * 32, SCREEN_HEIGHT - 3 * 32, 32, 32, 4);
+    hud = new HUD(renderer, healthBar, inventory);
+    player = new Player(renderer, "assets/player.png", playerRect.x, playerRect.y, playerRect.w, playerRect.h, SPEED, hud);
     player->render(renderer);
 }

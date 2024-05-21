@@ -8,6 +8,7 @@
 #include "utils.h"
 #include <vector>
 #include "healthbar.h"
+#include "hud.h"
 
 const float JUMP_DELAY = 1000;
 const float JUMP_HEIGHT = 50;
@@ -15,12 +16,12 @@ const float JUMP_SPEED = 20.0f;
 const float GRAVITY = 1.0f;
 static bool jumping = false;
 
-Player::Player(SDL_Renderer *renderer, std::string path, float x, float y, float w, float h, float speed, HealthBar *healthBar)
+Player::Player(SDL_Renderer *renderer, std::string path, float x, float y, float w, float h, float speed, HUD *hud)
 {
     this->playerRect = {static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h)};
     this->speed = speed;
     this->texture = loadTexture(path, renderer);
-    this->healthBar = healthBar;
+    this->hud = hud;
 }
 
 void Player::render(SDL_Renderer *renderer)
@@ -122,16 +123,6 @@ void Player::checkCollision(SDL_Rect &obstacle, SDL_Rect &potentialRect)
     }
 }
 
-void Player::addItem(Item *item)
-{
-    playerItems.push_back(item);
-}
-
-std::vector<Item *> Player::getItems()
-{
-    return playerItems;
-}
-
 void Player::checkCollisionWithItems(Map *map)
 {
     for (auto it = map->items.begin(); it != map->items.end();)
@@ -142,7 +133,7 @@ void Player::checkCollisionWithItems(Map *map)
             itemRect.y < playerRect.y + playerRect.h &&
             itemRect.y + itemRect.h > playerRect.y)
         {
-            Player::addItem(*it);
+            hud->getInventory()->addItem(*it);
             it = map->items.erase(it);
         }
         else

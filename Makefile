@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = src/main.cpp src/map.cpp src/player.cpp src/utils.cpp src/map.h src/player.h src/utils.h src/item.h src/item.cpp src/animation.h src/animation.cpp src/json.h src/json.cpp src/healthbar.cpp src/healthbar.h
+OBJS = src/main.cpp src/map.cpp src/player.cpp src/utils.cpp src/map.h src/player.h src/utils.h src/item.h src/item.cpp src/animation.h src/animation.cpp src/json.h src/json.cpp src/healthbar.cpp src/healthbar.h src/hud.cpp src/hud.h src/inventory.h src/inventory.cpp
 
 #OBJ_NAME specifies the name of our exectuable
 OBJ_NAME = game
