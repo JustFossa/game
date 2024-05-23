@@ -174,7 +174,8 @@ void init()
     map = new Map(renderer, "assets/bg.jpg", viewport.x, viewport.y, viewport.w, viewport.h, items);
     map->render(renderer);
     healthBar = new HealthBar(renderer, "assets/healthbar.png", 100, 100, SCREEN_WIDTH - 240, -25, 48, 16, 6);
-    inventory = new Inventory(renderer, "assets/inventory.png", SCREEN_WIDTH - 3 * 32, SCREEN_HEIGHT - 3 * 32, 32, 32, 4);
+    inventory = new Inventory(renderer, "assets/inventory.png", SCREEN_WIDTH - 3 * 32 * 3, SCREEN_HEIGHT - 3 * 32, 32, 32, 4);
+    inventory->initSlots(3);
     hud = new HUD(renderer, healthBar, inventory);
     player = new Player(renderer, "assets/player.png", playerRect.x, playerRect.y, playerRect.w, playerRect.h, SPEED, hud);
     player->render(renderer);

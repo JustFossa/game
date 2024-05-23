@@ -23,8 +23,10 @@ Inventory::Inventory(SDL_Renderer *renderer, std::string texture, int x, int y, 
 void Inventory::render(SDL_Renderer *renderer)
 {
     SDL_Rect srcRect = {currentFrame * frameWidth, 0, frameWidth, frameHeight};
-    SDL_Rect destRect = itemRect;
-    SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
+    for (Slot *slot : slots)
+    {
+        slot->render(renderer);
+    }
 }
 
 SDL_Rect Inventory::getRect()
@@ -62,5 +64,13 @@ void Inventory::update()
             currentFrame = 0; // Reset to the first frame
         }
         lastUpdateTime = currentTime;
+    }
+}
+
+void Inventory::initSlots(int count)
+{
+    for (int i = 0; i < count; i++)
+    {
+        slots.push_back(new Slot(renderer, "assets/inventory.png", x + (i * frameWidth), y, frameWidth, frameHeight, i, frameCount));
     }
 }

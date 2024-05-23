@@ -7,6 +7,7 @@
 #include "animation.h"
 #include "item.h"
 #include <vector>
+#include "slot.h"
 
 class Inventory
 {
@@ -19,6 +20,8 @@ public:
     Item *getItem(int index);
     void update();
     void renderItems(SDL_Renderer *renderer);
+    std::vector<Slot *> getSlots() { return slots; };
+    void initSlots(int count);
 
 private:
     int frameCount;
@@ -28,6 +31,7 @@ private:
     int frameHeight;
     int x;
     int y;
+    std::vector<Slot *> slots;
     SDL_Texture *texture;
     SDL_Renderer *renderer;
     SDL_Rect animationRect;
